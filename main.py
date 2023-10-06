@@ -42,7 +42,7 @@ def get_api_key(api_key_query: str = Security(api_key_query)):
 
 
 # Descargamos el tokenizador en español, con la función NER.
-nlp = ...#spacy.load("es_core_news_sm")
+nlp = spacy.load("es_core_news_sm")
 
 
 # Definimos un endpoint de home, únicamente para revisar el funcionamiento de la api
@@ -76,10 +76,13 @@ def recon_entities(oraciones_list: list):
 # Definimos nuestra función NER
 @app.post("/ner")
 def print_entities(data: DatosEntrada,  api_key: APIKey = Depends(get_api_key)):
+    # Descargamos las oraciones del usuario
     oraciones = data.oraciones
+    # Mandamos ejecutar las oraciones a la función recon entities
     resultados = recon_entities(oraciones)
+    # Imprimimos los resultados en forma de JSON
     return {"Resultado": resultados}
 
-
+# Se ejecuta la aplicación con la ayuda de uvicorn para definir host y puerto
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
